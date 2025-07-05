@@ -19,8 +19,11 @@ public class PretService {
     private AdherentRepository adherentRepository;
     @Autowired
     private ProfilRepository profilRepository;
+    @Autowired
+    private DateSystemeService dateSystemeService;
 
     public void creerPret(Timestamp datePret, Timestamp dateRetour, int idTypePret, int idExemplaire, int idAdherent) {
+        // Utilise dateSystemeService.getDateNow() si besoin
         pretRepository.insert(datePret, dateRetour, idTypePret, idExemplaire, idAdherent);
     }
 
@@ -36,7 +39,7 @@ public class PretService {
     }
 
     public void retourPret(int idPret) {
-        pretRepository.insertRetourPret(idPret);
+        pretRepository.insertRetourPret(idPret, dateSystemeService.getDateNow());
     }
 
     public List<Map<String, Object>> getPretsEnCoursByAdherent(int idAdherent) {
@@ -53,5 +56,9 @@ public class PretService {
 
     public Integer getLastPretIdForAdherent(int idAdherent, int idExemplaire, Timestamp datePret) {
         return pretRepository.getLastPretIdForAdherent(idAdherent, idExemplaire, datePret);
+    }
+
+    public boolean isAdherentBlackliste(int idAdherent) {
+        return pretRepository.isAdherentBlackliste(idAdherent, dateSystemeService.getDateNow());
     }
 }

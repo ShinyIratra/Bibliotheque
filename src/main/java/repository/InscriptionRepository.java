@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.time.LocalDate;
 
 @Repository
 public class InscriptionRepository {
@@ -28,9 +29,9 @@ public class InscriptionRepository {
     }
 
     // Vérifie si l'adhérent est actif à la date du jour
-    public boolean isActif(int idAdherent) {
-        String sql = "SELECT COUNT(*) FROM Inscription WHERE id_adherent = ? AND CURRENT_DATE BETWEEN date_debut::date AND date_fin::date";
-        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{idAdherent}, Integer.class);
+    public boolean isActif(int idAdherent, LocalDate now) {
+        String sql = "SELECT COUNT(*) FROM Inscription WHERE id_adherent = ? AND ? BETWEEN date_debut::date AND date_fin::date";
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{idAdherent, java.sql.Date.valueOf(now)}, Integer.class);
         return count != null && count > 0;
     }
 

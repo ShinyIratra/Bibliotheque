@@ -154,15 +154,14 @@ public class ExemplaireRepository {
         return jdbcTemplate.queryForList(sql, d, d);
     }
 
-    // ExemplaireRepository.java
     public List<Map<String, Object>> getExemplairesDisponiblesPourPeriode(LocalDate debut, LocalDate fin) {
-        String sql = "SELECT e.* FROM Exemplaire e " +
-                     "WHERE NOT EXISTS (" +
-                     "  SELECT 1 FROM Pret p " +
-                     "  WHERE p.id_exemplaire = e.id_exemplaire " +
-                     "    AND NOT EXISTS (SELECT 1 FROM Retour_Pret r WHERE r.id_pret = p.id_pret) " +
-                     "    AND (p.date_pret, p.date_retour) OVERLAPS (?, ?)" +
-                     ")";
-        return jdbcTemplate.queryForList(sql, java.sql.Timestamp.valueOf(debut.atStartOfDay()), java.sql.Timestamp.valueOf(fin.atTime(23,59,59)));
+        String sql =
+            "SELECT e.* FROM Exemplaire e " +
+            "WHERE e.id_exemplaire NOT IN (" +
+            "   SELECT id_exemplaire FROM Pret " +
+            "   WHERE (date_pret, date_retour) OVERLAPS (?, ?)" +
+            ")";
+        return jdbcTemplate.queryForList(sql, java.sql.Date.valueOf(debut), java.sql.Date.valueOf(fin));
+
     }
 }

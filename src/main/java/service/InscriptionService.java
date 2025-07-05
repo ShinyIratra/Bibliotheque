@@ -9,6 +9,8 @@ import java.sql.Timestamp;
 public class InscriptionService {
     @Autowired
     private InscriptionRepository inscriptionRepository;
+    @Autowired
+    private DateSystemeService dateSystemeService;
 
     public boolean hasInscriptionForPeriod(int idAdherent, Timestamp debut, Timestamp fin) {
         return inscriptionRepository.hasInscriptionForPeriod(idAdherent, debut, fin);
@@ -19,6 +21,6 @@ public class InscriptionService {
     }
 
     public boolean isActif(int idAdherent) {
-        return inscriptionRepository.isActif(idAdherent);
+        return inscriptionRepository.isActif(idAdherent, dateSystemeService.getDateNow().toLocalDate());
     }
 }

@@ -307,6 +307,12 @@
             <a href="mes-droits"><i class="fa-solid fa-id-card"></i> Consulter mes droits d'emprunt</a>
             <a href="historique"><i class="fa-solid fa-clock-rotate-left"></i> Voir l'historique de mes prêts</a>
         </div>
+        <!-- Affichage pour tous -->
+        <div style="font-size:0.98em;color:var(--gray-400);margin-bottom:18px;">
+            <i class="fa-solid fa-clock"></i>
+            Date système actuelle : <strong>${dateNow}</strong>
+        </div>
+        <!-- Actions réservées au bibliothécaire -->
         <c:if test="${sessionScope.nomProfil == 'Bibliothecaire'}">
             <section class="admin-panel">
                 <h3><i class="fa-solid fa-user-tie"></i> Actions Bibliothécaire</h3>
@@ -316,6 +322,12 @@
                     <a href="admin/jours-feries"><i class="fa-solid fa-calendar-day"></i> Configurer les jours fériés</a>
                     <a href="validation-pret"><i class="fa-solid fa-check"></i> Valider les prêts en attente</a>
                 </div>
+                <form action="modifier-date-systeme" method="post" style="margin-bottom:18px;">
+                    <label>Changer la date système :</label>
+                    <input type="datetime-local" name="nouvelleDate" required>
+                    <button type="submit">Définir</button>
+                    <a href="reset-date-systeme" style="margin-left:10px;">Réinitialiser</a>
+                </form>
             </section>
         </c:if>
     </main>
