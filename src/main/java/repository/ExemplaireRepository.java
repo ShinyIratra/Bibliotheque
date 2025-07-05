@@ -162,5 +162,6 @@ public class ExemplaireRepository {
             "   WHERE (date_pret, date_retour) OVERLAPS (?, ?)" +
             ")";
         return jdbcTemplate.queryForList(sql, java.sql.Date.valueOf(debut), java.sql.Date.valueOf(fin));
+
     }
 }
