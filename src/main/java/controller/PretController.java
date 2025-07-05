@@ -114,6 +114,6 @@ public class PretController {
     public List<Map<String, Object>> getExemplairesDisponibles(@RequestParam String date_pret, @RequestParam String date_retour) {
         LocalDate debut = LocalDate.parse(date_pret);
         LocalDate fin = LocalDate.parse(date_retour);
-        return exemplaireService.getExemplairesDisponiblesPourPeriode(debut, fin);
+        return exemplaireService.getAllExemplairesDisponiblesPourPeriode(debut, fin);
     }
 }

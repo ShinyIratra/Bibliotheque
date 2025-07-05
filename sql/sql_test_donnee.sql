@@ -1,98 +1,131 @@
--- Statut
-INSERT INTO Statut VALUES (1, 'Disponible'), (2, 'Emprunte'), (3, 'Reserve'), (4, 'Non Disponible');
+-- LIVRE (20 livres)
+INSERT INTO Livre (id_livre, titre, id_categorie, id_categorie_pret) VALUES
+(1, 'Le Petit Prince', 1, 1),
+(2, '1984', 2, 1),
+(3, 'L Etranger', 1, 1),
+(4, 'La Peste', 1, 1),
+(5, 'Le Seigneur des Anneaux', 2, 1),
+(6, 'Astérix le Gaulois', 4, 2),
+(7, 'Tintin au Tibet', 4, 2),
+(8, 'Le Monde de Sophie', 3, 1),
+(9, 'Cosmos', 5, 1),
+(10, 'Harry Potter à l école des sorciers', 6, 1),
+(11, 'Le Meilleur des mondes', 2, 1),
+(12, 'Le Comte de Monte-Cristo', 1, 1),
+(13, 'Les Misérables', 1, 1),
+(14, 'Le Livre de la Jungle', 6, 1),
+(15, 'Le Capital', 3, 1),
+(16, 'Le Grand Bleu', 5, 2),
+(17, 'La Guerre des boutons', 6, 1),
+(18, 'Le Horla', 1, 1),
+(19, 'Voyage au centre de la Terre', 2, 1),
+(20, 'Le Petit Nicolas', 6, 1);
 
--- Configuration_Profil
-INSERT INTO Configuration_Profil VALUES 
-   (1, 5, 2, 3), 
-   (2, 10, 3, 5), 
-   (3, 100, 100, 100),
-   (4, 2, 1, 1),
-   (5, 7, 2, 4);
+-- EXEMPLAIRE (30 exemplaires, 1 à 3 par livre)
+INSERT INTO Exemplaire (id_exemplaire, Reference, id_livre) VALUES
+(1, 'LP-001', 1), (2, 'LP-002', 1),
+(3, '1984-001', 2), (4, '1984-002', 2),
+(5, 'ETR-001', 3),
+(6, 'PES-001', 4),
+(7, 'SDA-001', 5), (8, 'SDA-002', 5), (9, 'SDA-003', 5),
+(10, 'AST-001', 6),
+(11, 'TIN-001', 7),
+(12, 'SOP-001', 8),
+(13, 'COS-001', 9),
+(14, 'HP-001', 10), (15, 'HP-002', 10),
+(16, 'MDM-001', 11),
+(17, 'CMC-001', 12),
+(18, 'MIS-001', 13), (19, 'MIS-002', 13),
+(20, 'LJ-001', 14),
+(21, 'CAP-001', 15),
+(22, 'GB-001', 16),
+(23, 'GDB-001', 17),
+(24, 'HOR-001', 18),
+(25, 'VCT-001', 19),
+(26, 'PN-001', 20), (27, 'PN-002', 20), (28, 'PN-003', 20),
+(29, 'ROM-001', 1), (30, 'ROM-002', 1);
 
--- Profil
-INSERT INTO Profil VALUES 
-   (1, 'Etudiant', 1), 
-   (2, 'Enseignant', 2), 
-   (3, 'Bibliothecaire', 3),
-   (4, 'Visiteur', 4),
-   (5, 'Chercheur', 5);
+-- STATUT_EXEMPLAIRE (statut actuel pour chaque exemplaire)
+-- INSERT INTO Statut_Exemplaire (id_status_exemplaire, date_ajout, id_exemplaire, id_statut) VALUES
+-- (1, '2025-07-01 10:00:00', 1, 1),
+-- (2, '2025-07-01 10:00:00', 2, 2),
+-- (3, '2025-07-01 10:00:00', 3, 1),
+-- (4, '2025-07-01 10:00:00', 4, 1),
+-- (5, '2025-07-01 10:00:00', 5, 1),
+-- (6, '2025-07-01 10:00:00', 6, 1),
+-- (7, '2025-07-01 10:00:00', 7, 1),
+-- (8, '2025-07-01 10:00:00', 8, 3),
+-- (9, '2025-07-01 10:00:00', 9, 1),
+-- (10, '2025-07-01 10:00:00', 10, 1),
+-- (11, '2025-07-01 10:00:00', 11, 1),
+-- (12, '2025-07-01 10:00:00', 12, 1),
+-- (13, '2025-07-01 10:00:00', 13, 1),
+-- (14, '2025-07-01 10:00:00', 14, 2),
+-- (15, '2025-07-01 10:00:00', 15, 1),
+-- (16, '2025-07-01 10:00:00', 16, 1),
+-- (17, '2025-07-01 10:00:00', 17, 1),
+-- (18, '2025-07-01 10:00:00', 18, 1),
+-- (19, '2025-07-01 10:00:00', 19, 1),
+-- (20, '2025-07-01 10:00:00', 20, 1),
+-- (21, '2025-07-01 10:00:00', 21, 1),
+-- (22, '2025-07-01 10:00:00', 22, 1),
+-- (23, '2025-07-01 10:00:00', 23, 1),
+-- (24, '2025-07-01 10:00:00', 24, 1),
+-- (25, '2025-07-01 10:00:00', 25, 1),
+-- (26, '2025-07-01 10:00:00', 26, 1),
+-- (27, '2025-07-01 10:00:00', 27, 1),
+-- (28, '2025-07-01 10:00:00', 28, 1),
+-- (29, '2025-07-01 10:00:00', 29, 1),
+-- (30, '2025-07-01 10:00:00', 30, 1);
 
--- Categorie_Pret
-INSERT INTO Categorie_Pret VALUES 
-   (1, 'Emportable'), 
-   (2, 'Non Emportable');
+-- -- RESERVATION (quelques réservations)
+-- INSERT INTO Reservation (id_reservation, date_reservation, date_reserver, id_exemplaire, id_adherent) VALUES
+-- (1, '2025-07-02 09:00:00', '2025-07-05 09:00:00', 2, 1),
+-- (2, '2025-07-03 14:00:00', '2025-07-06 14:00:00', 8, 2),
+-- (3, '2025-07-04 11:00:00', '2025-07-07 11:00:00', 14, 3);
 
--- Type_Penalite
-INSERT INTO Type_Penalite VALUES 
-   (1, 'Retard'), 
-   (2, 'Livre perdu'),
-   (3, 'Dégradation'),
-   (4, 'Non-respect du règlement');
+-- -- PENALITE (quelques pénalités)
+-- INSERT INTO Penalite (id_penalite, justificatif, date_penalite, id_type_penalite, id_adherent) VALUES
+-- (1, 'Retard de 3 jours', '2025-06-20 10:00:00', 1, 1),
+-- (2, 'Livre perdu', '2025-06-25 15:00:00', 2, 2);
 
--- Categorie
-INSERT INTO Categorie VALUES 
-   (1, 'Roman', 18), 
-   (2, 'Science-fiction', 16), 
-   (3, 'Essai', 21),
-   (4, 'Bande dessinée', 12),
-   (5, 'Documentaire', 0),
-   (6, 'Jeunesse', 8);
+-- INSCRIPTION (inscriptions des adhérents)
+INSERT INTO Inscription (id, date_debut, date_fin, id_adherent) VALUES
+(1, '2025-01-01 09:00:00', '2025-12-31 18:00:00', 1),
+(2, '2025-01-01 09:00:00', '2025-12-31 18:00:00', 2),
+(3, '2025-01-01 09:00:00', '2025-12-31 18:00:00', 3),
+(4, '2025-01-01 09:00:00', '2025-12-31 18:00:00', 4),
+(5, '2025-01-01 09:00:00', '2025-12-31 18:00:00', 5);
 
--- Type_Pret
-INSERT INTO Type_Pret VALUES 
-   (1, 'Sur Place'), 
-   (2, 'Emporte');
+-- -- BLACKLISTING (un adhérent blacklisté)
+-- INSERT INTO Blacklisting (id_blacklisting, date_debut, date_fin, id_adherent) VALUES
+-- (1, '2025-06-15 09:00:00', '2025-07-15 18:00:00', 2);
 
--- Configuration
-INSERT INTO Configuration (nbr_retard, nbr_mois) VALUES 
-   (3, 12), 
-   (5, 6),
-   (2, 24);
-   
---- Configuration Requise ----
+-- -- PRET (quelques prêts)
+-- INSERT INTO Pret (id_pret, date_pret, date_retour, id_type_pret, id_exemplaire, id_adherent) VALUES
+-- (1, '2025-07-01 10:00:00', '2025-07-15 10:00:00', 2, 1, 1),
+-- (2, '2025-07-02 11:00:00', '2025-07-16 11:00:00', 2, 3, 2),
+-- (3, '2025-07-03 12:00:00', '2025-07-17 12:00:00', 2, 5, 3);
 
+-- -- PROLONGEMENT (un prolongement)
+-- INSERT INTO Prolongement (id_prolongement, date_retour, id_pret) VALUES
+-- (1, '2025-07-22 10:00:00', 1);
 
-INSERT INTO Livre VALUES 
-   (1, 'Le Petit Prince', 1, 1),
-   (2, '1984', 2, 1),
-   (3, 'L Etranger', 1, 1),
-   (4, 'Brave New World', 2, 2),
-   (5, 'Tintin au Tibet', 4, 1),
-   (6, 'Python pour les nuls', 5, 1),
-   (7, 'Le Monde de Sophie', 3, 1),
-   (8, 'Astérix Gladiateur', 4, 1),
-   (9, 'Le Livre de la Jungle', 6, 1),
-   (10, 'Voyage au centre de la Terre', 2, 1);
+-- -- RETOUR_PRET (un retour)
+-- INSERT INTO Retour_Pret (id_retour_pret, date_retourne, id_pret) VALUES
+-- (1, '2025-07-15 09:30:00', 1);
 
--- Exemplaire
-INSERT INTO Exemplaire VALUES 
-   (1, 'LP-001', 1),
-   (2, 'N84-001', 2),
-   (3, 'ET-001', 3),
-   (4, 'BNW-001', 4),
-   (5, 'TT-001', 5),
-   (6, 'PY-001', 6),
-   (7, 'MS-001', 7),
-   (8, 'AG-001', 8),
-   (9, 'LJ-001', 9),
-   (10, 'VC-001', 10),
-   (11, 'LP-002', 1),
-   (12, 'N84-002', 2);
+-- JOUR_FERIE (quelques jours fériés)
+INSERT INTO Jour_Ferie (id_ferie, date_ferie) VALUES
+(1, '2025-01-01'),
+(2, '2025-05-01'),
+(3, '2025-07-14');
 
-   -- Adherent (à insérer avant Inscription, Reservation, etc.)
-INSERT INTO Adherent VALUES
-   (1, 'Iratra', 'Shiny', '123', '2000-05-12', 1),
-   (2, 'Bob Martin', 'bob.martin', 'motdepasse', '1985-11-03', 2),
-   (3, 'Claire Dubois', 'claire.dubois', 'pass1234', '1992-07-21', 1),
-   (4, 'Bibliothecaire', 'admin', '123', '1978-02-15', 3),
-   (5, 'Emma Petit', 'emma.petit', 'emma2024', '2003-09-30', 4);
-
--- Jour_Ferie
-INSERT INTO Jour_Ferie VALUES 
-   (1, '2024-01-01'),
-   (2, '2024-04-01'),
-   (3, '2024-05-01'),
-   (4, '2024-12-25');
+-- NOTE (quelques notes)
+INSERT INTO Note (id_note, note, commentaire, id_adherent, id_livre) VALUES
+(1, 5, 'Excellent livre !', 1, 1),
+(2, 4, 'Très intéressant.', 2, 2),
+(3, 3, 'Lecture difficile.', 3, 3);
 
 -- Synchronisation des séquences
 SELECT setval('statut_id_statut_seq', COALESCE((SELECT MAX(id_statut) FROM Statut), 1), true);

@@ -37,6 +37,7 @@ public class HistoriqueController {
             Model model
     ) {
         String nomProfil = (String) session.getAttribute("nomProfil");
+        // GET /historique/{idAdherent}
         if (nomProfil == null || !nomProfil.equals("Bibliothecaire")) {
             model.addAttribute("erreur", "Vous n'avez pas les droits pour consulter l'historique d'un autre adhérent.");
             return "historique_pret";

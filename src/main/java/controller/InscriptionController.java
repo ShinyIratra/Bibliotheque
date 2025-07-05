@@ -26,9 +26,10 @@ public class InscriptionController {
         Integer userId = (Integer) session.getAttribute("userId");
         String nomProfil = (String) session.getAttribute("nomProfil");
         if (userId == null) return "redirect:/login";
-        if (nomProfil == null || !nomProfil.equals("Bibliothecaire")) {
-            return "redirect:/front-office";
-        }
+        // if (nomProfil == null || !nomProfil.equals("Bibliothecaire")) {
+        //     return "redirect:/front-office";
+        // }
+        if (nomProfil == null) return "redirect:/login";
         List<Map<String, Object>> adherents = adherentService.getAllAdherentIdentifiantsEtNoms();
         model.addAttribute("adherents", adherents != null ? adherents : List.of());
         return "inscription";
@@ -43,6 +44,7 @@ public class InscriptionController {
             HttpSession session
     ) {
         String nomProfil = (String) session.getAttribute("nomProfil");
+        // POST /inscription
         if (nomProfil == null || !nomProfil.equals("Bibliothecaire")) {
             return "redirect:/front-office";
         }

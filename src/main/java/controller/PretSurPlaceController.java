@@ -43,6 +43,7 @@ public class PretSurPlaceController {
             Model model
     ) {
         String nomProfil = (String) session.getAttribute("nomProfil");
+        // POST /pret-sur-place
         if (nomProfil == null || !nomProfil.equals("Bibliothecaire")) {
             return "redirect:/front-office";
         }

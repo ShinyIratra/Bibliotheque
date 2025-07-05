@@ -26,7 +26,6 @@ public class NoteService {
     // Vérifie si l'adhérent a emprunté ET rendu ce livre
     public boolean hasEmprunteEtRendu(int idAdherent, int idLivre) {
         String sql = "SELECT COUNT(*) FROM Pret p " +
-                     "JOIN Validation_Pret vp ON vp.id_pret = p.id_pret " +
                      "JOIN Retour_Pret r ON r.id_pret = p.id_pret " +
                      "JOIN Exemplaire e ON p.id_exemplaire = e.id_exemplaire " +
                      "WHERE p.id_adherent = ? AND e.id_livre = ?";

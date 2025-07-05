@@ -131,7 +131,7 @@
                         <c:otherwise>${n.commentaire}</c:otherwise>
                     </c:choose><br>
                     <c:if test="${sessionScope.nomProfil == 'Bibliothecaire'}">
-                        <form action="/note/${n.id_note}/delete" method="post" style="display:inline;">
+                        <form action="note/${n.id_note}/delete" method="post" style="display:inline;">
                             <input type="hidden" name="idLivre" value="${idLivre}" />
                             <button type="submit">Supprimer</button>
                         </form>
@@ -142,7 +142,7 @@
     </c:choose>
     <c:if test="${canNoter}">
         <h4>Donner votre avis</h4>
-        <form action="/livre/${idLivre}/noter" method="post">
+        <form action="livre/${idLivre}/noter" method="post">
             <label>Note (1 à 5) :</label>
             <input type="number" name="note" min="1" max="5" required><br>
             <label>Commentaire :</label>
@@ -150,7 +150,7 @@
             <button type="submit">Envoyer</button>
         </form>
     </c:if>
-    <a href="/front-office">Retour</a>
+    <a href="front-office">Retour</a>
 </div>
 </body>
 </html>
