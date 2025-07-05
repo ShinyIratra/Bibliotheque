@@ -16,20 +16,12 @@ public class DateSystemeController {
 
     @PostMapping("/modifier-date-systeme")
     public String modifierDate(@RequestParam String nouvelleDate, HttpSession session) {
-        String nomProfil = (String) session.getAttribute("nomProfil");
-        if (nomProfil == null || !nomProfil.equals("Bibliothecaire")) {
-            return "redirect:/front-office";
-        }
         dateSystemeService.setDateNow(LocalDateTime.parse(nouvelleDate));
         return "redirect:/front-office";
     }
 
     @GetMapping("/reset-date-systeme")
     public String resetDate(HttpSession session) {
-        String nomProfil = (String) session.getAttribute("nomProfil");
-        if (nomProfil == null || !nomProfil.equals("Bibliothecaire")) {
-            return "redirect:/front-office";
-        }
         dateSystemeService.resetDateNow();
         return "redirect:/front-office";
     }

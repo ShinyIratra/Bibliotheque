@@ -278,7 +278,7 @@
             <a href="reservation"><i class="fa-solid fa-calendar-plus"></i> <span>Réserver un exemplaire</span></a>
             <a href="mes-droits"><i class="fa-solid fa-id-card"></i> <span>Mes droits d'emprunt</span></a>
             <a href="historique"><i class="fa-solid fa-clock-rotate-left"></i> <span>Historique de mes prêts</span></a>
-            <a href="/logout" class="logout"><i class="fa-solid fa-sign-out-alt"></i> <span>Déconnexion</span></a>
+            <a href="logout" class="logout"><i class="fa-solid fa-sign-out-alt"></i> <span>Déconnexion</span></a>
         </nav>
     </aside>
     <main class="main-content">
@@ -312,6 +312,12 @@
             <i class="fa-solid fa-clock"></i>
             Date système actuelle : <strong>${dateNow}</strong>
         </div>
+        <form action="modifier-date-systeme" method="post" style="margin-bottom:18px;">
+                    <label>Changer la date système :</label>
+                    <input type="datetime-local" name="nouvelleDate" required>
+                    <button type="submit">Définir</button>
+                    <a href="reset-date-systeme" style="margin-left:10px;">Réinitialiser</a>
+                </form>
         <!-- Actions réservées au bibliothécaire -->
         <c:if test="${sessionScope.nomProfil == 'Bibliothecaire'}">
             <section class="admin-panel">
@@ -322,12 +328,6 @@
                     <a href="admin/jours-feries"><i class="fa-solid fa-calendar-day"></i> Configurer les jours fériés</a>
                     <a href="validation-pret"><i class="fa-solid fa-check"></i> Valider les prêts en attente</a>
                 </div>
-                <form action="modifier-date-systeme" method="post" style="margin-bottom:18px;">
-                    <label>Changer la date système :</label>
-                    <input type="datetime-local" name="nouvelleDate" required>
-                    <button type="submit">Définir</button>
-                    <a href="reset-date-systeme" style="margin-left:10px;">Réinitialiser</a>
-                </form>
             </section>
         </c:if>
     </main>

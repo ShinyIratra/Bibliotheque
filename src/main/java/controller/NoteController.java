@@ -47,6 +47,7 @@ public class NoteController {
     @PostMapping("/note/{idNote}/delete")
     public String deleteNote(@PathVariable int idNote, HttpSession session, @RequestParam int idLivre) {
         String profil = (String) session.getAttribute("nomProfil");
+        // POST /note/{idNote}/delete
         if (!"Bibliothecaire".equals(profil)) return "redirect:/front-office";
         noteService.deleteNote(idNote);
         return "redirect:/livre/" + idLivre;

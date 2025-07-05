@@ -108,18 +108,6 @@ public class ReservationController {
         return "reservation";
     }
 
-    // Endpoint pour AJAX : exemplaires disponibles pour une période
-    @GetMapping("/exemplaires-disponibles")
-    @ResponseBody
-    public List<Map<String, Object>> getExemplairesDisponibles(
-            @RequestParam String date_pret,
-            @RequestParam String date_retour
-    ) {
-        LocalDate debut = LocalDate.parse(date_pret);
-        LocalDate fin = LocalDate.parse(date_retour);
-        return exemplaireService.getAllExemplairesDisponiblesPourPeriode(debut, fin);
-    }
-
     @GetMapping("/exemplaires-non-disponibles")
     @ResponseBody
     public List<Map<String, Object>> getExemplairesNonDisponibles(@RequestParam String date) {
