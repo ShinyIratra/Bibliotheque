@@ -8,6 +8,7 @@ import service.ExemplaireService;
 import service.AdherentService;
 import service.PretService;
 import service.TypePretService;
+import service.DateSystemeService;
 
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
@@ -26,6 +27,8 @@ public class PretSurPlaceController {
     private PretService pretService;
     @Autowired
     private TypePretService typePretService;
+    @Autowired
+    private DateSystemeService dateSystemeService;
 
     @GetMapping("/pret-sur-place")
     public String formSurPlace(HttpSession session, Model model) {
@@ -93,7 +96,7 @@ public class PretSurPlaceController {
         }
 
         // Créer le prêt pour la journée (date_retour = aujourd'hui 23:59:59)
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = dateSystemeService.getDateNow();
         LocalDateTime finJournee = now.toLocalDate().atTime(23, 59, 59);
         pretService.creerPret(Timestamp.valueOf(now), Timestamp.valueOf(finJournee), idTypePretSurPlace, idExemplaire, idAdherent);
 

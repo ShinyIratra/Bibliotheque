@@ -153,4 +153,14 @@ public class ExemplaireRepository {
         java.sql.Date d = java.sql.Date.valueOf(date);
         return jdbcTemplate.queryForList(sql, d, d);
     }
+
+    public List<Map<String, Object>> getExemplairesDisponiblesPourPeriode(LocalDate debut, LocalDate fin) {
+        String sql =
+            "SELECT e.* FROM Exemplaire e " +
+            "WHERE e.id_exemplaire NOT IN (" +
+            "   SELECT id_exemplaire FROM Pret " +
+            "   WHERE (date_pret, date_retour) OVERLAPS (?, ?)" +
+            ")";
+        return jdbcTemplate.queryForList(sql, java.sql.Date.valueOf(debut), java.sql.Date.valueOf(fin));
+    }
 }

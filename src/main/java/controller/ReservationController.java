@@ -9,6 +9,7 @@ import service.ExemplaireService;
 import service.AdherentService;
 import service.PretService;
 import service.BlacklistingService;
+import service.DateSystemeService;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
@@ -28,6 +29,8 @@ public class ReservationController {
     private PretService pretService;
     @Autowired
     private BlacklistingService blacklistingService;
+    @Autowired
+    private DateSystemeService dateSystemeService;
 
     @GetMapping("/reservation")
     public String formReservation(Model model, HttpSession session) {
@@ -49,6 +52,7 @@ public class ReservationController {
             HttpSession session,
             Model model
     ) {
+        // Utilise dateSystemeService.getDateNow() si besoin
         Integer idAdherent = (Integer) session.getAttribute("userId");
         if (idAdherent == null) return "redirect:/login";
 
@@ -102,6 +106,18 @@ public class ReservationController {
         model.addAttribute("message", "Réservation effectuée !");
         model.addAttribute("exemplaires", exemplaireService.getAllExemplairesNonDisponibles());
         return "reservation";
+    }
+
+    // Endpoint pour AJAX : exemplaires disponibles pour une période
+    @GetMapping("/exemplaires-disponibles")
+    @ResponseBody
+    public List<Map<String, Object>> getExemplairesDisponibles(
+            @RequestParam String date_pret,
+            @RequestParam String date_retour
+    ) {
+        LocalDate debut = LocalDate.parse(date_pret);
+        LocalDate fin = LocalDate.parse(date_retour);
+        return exemplaireService.getAllExemplairesDisponiblesPourPeriode(debut, fin);
     }
 
     @GetMapping("/exemplaires-non-disponibles")

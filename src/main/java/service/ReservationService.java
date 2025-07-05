@@ -7,6 +7,9 @@ import repository.PretRepository;
 import repository.ProfilRepository;
 import repository.InscriptionRepository;
 import repository.ExemplaireRepository;
+import service.DateSystemeService;
+
+import java.time.LocalDateTime;
 
 @Service
 public class ReservationService {
@@ -19,6 +22,8 @@ public class ReservationService {
     private InscriptionRepository inscriptionRepository;
     @Autowired
     private ExemplaireRepository exemplaireRepository;
+    @Autowired
+    private DateSystemeService dateSystemeService;
 
     public boolean isQuotaReservationDepasse(int idAdherent) {
         int nbReservations = reservationRepository.countReservationsEnCoursByAdherent(idAdherent);
@@ -28,7 +33,7 @@ public class ReservationService {
     }
 
     public boolean isAdherentActif(int idAdherent) {
-        return inscriptionRepository.isActif(idAdherent);
+        return inscriptionRepository.isActif(idAdherent, dateSystemeService.getDateNow().toLocalDate());
     }
 
     public boolean isExemplaireReservable(int idExemplaire) {
@@ -37,6 +42,8 @@ public class ReservationService {
     }
 
     public void reserver(int idAdherent, int idExemplaire) {
-        reservationRepository.insertReservation(idAdherent, idExemplaire);
+        // Utilise la date système personnalisée
+        LocalDateTime now = dateSystemeService.getDateNow();
+        reservationRepository.insertReservation(idAdherent, idExemplaire, now);
     }
 }
