@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -35,9 +36,9 @@ public class PretRepository {
     }
 
     // Insère un retour de prêt
-    public void insertRetourPret(int idPret) {
-        String sql = "INSERT INTO Retour_Pret (id_pret, date_retour) VALUES (?, NOW())";
-        jdbcTemplate.update(sql, idPret);
+    public void insertRetourPret(int idPret, LocalDateTime now) {
+        String sql = "INSERT INTO Retour_Pret (id_pret, date_retourne) VALUES (?, ?)";
+        jdbcTemplate.update(sql, idPret, Timestamp.valueOf(now));
     }
 
     // Vérifie si un exemplaire est déjà prêté sur une période
@@ -97,5 +98,12 @@ public class PretRepository {
     public void updateDateRetour(int idPret, Timestamp nouvelleDateRetour) {
         String sql = "UPDATE Pret SET date_retour = ? WHERE id_pret = ?";
         jdbcTemplate.update(sql, nouvelleDateRetour, idPret);
+    }
+
+    // Vérifie si un adhérent est blacklisté à la date actuelle
+    public boolean isAdherentBlackliste(int idAdherent, LocalDateTime now) {
+        String sql = "SELECT COUNT(*) FROM Blacklisting WHERE id_adherent = ? AND ? BETWEEN date_debut AND date_fin";
+        Integer count = jdbcTemplate.queryForObject(sql, new Object[]{idAdherent, Timestamp.valueOf(now)}, Integer.class);
+        return count != null && count > 0;
     }
 }

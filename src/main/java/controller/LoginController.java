@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import service.AdherentService;
 import service.ProfilService; // Import ajouté
 import service.LivreService; // Import du service Livre
+import service.DateSystemeService; // Import du service DateSysteme
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -22,6 +23,9 @@ public class LoginController {
 
     @Autowired
     private LivreService livreService; // Nouveau service ajouté
+
+    @Autowired
+    private DateSystemeService dateSystemeService; // Nouveau service ajouté
 
     @GetMapping("/login")
     public String login(Model model){
@@ -69,12 +73,13 @@ public class LoginController {
     }
 
     @GetMapping("/front-office")
-    public String frontOffice(HttpSession session, Model model) {
+    public String frontOffice(Model model, HttpSession session) {
         Integer userId = (Integer) session.getAttribute("userId");
         if (userId == null) {
             return "redirect:/login";
         }
         model.addAttribute("livres", livreService.getAllLivres());
+        model.addAttribute("dateNow", dateSystemeService.getDateNow());
         return "front-office";
     }
 

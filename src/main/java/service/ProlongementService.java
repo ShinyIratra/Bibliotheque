@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class ProlongementService {
+    private static final int PERIODE_MOIS = 2; // ou la valeur appropriée
+
     @Autowired
     private ProlongementRepository prolongementRepository;
     @Autowired
@@ -20,19 +22,21 @@ public class ProlongementService {
     private PenaliteRepository penaliteRepository;
     @Autowired
     private ProfilRepository profilRepository;
+    @Autowired
+    private DateSystemeService dateSystemeService;
 
     public String prolongerPret(int idPret, int idAdherent) {
         // 1. Vérifier la date de retour (au moins 2 jours avant)
         Timestamp dateRetour = pretRepository.getDateRetourByPret(idPret);
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = dateSystemeService.getDateNow();
         LocalDateTime retour = dateRetour.toLocalDateTime();
         if (now.plusDays(2).isAfter(retour)) {
             return "La prolongation doit être demandée au moins 2 jours avant la date de retour.";
         }
 
         // 2. Vérifier pénalité
-        int penalites = penaliteRepository.countRetardsRecents(idAdherent, 12); // 12 mois = historique
-        if (penalites > 0) {
+        int nbRetards = penaliteRepository.countRetardsRecents(idAdherent, PERIODE_MOIS, dateSystemeService.getDateNow().toLocalDate());
+        if (nbRetards > 0) {
             return "Vous avez une pénalité en cours. Prolongation impossible.";
         }
 

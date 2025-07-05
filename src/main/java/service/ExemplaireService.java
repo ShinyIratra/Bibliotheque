@@ -55,4 +55,8 @@ public class ExemplaireService {
     public List<Map<String, Object>> getExemplairesReservablesPourDate(LocalDate date) {
         return exemplaireRepository.getExemplairesReservablesPourDate(date);
     }
+
+    public List<Map<String, Object>> getAllExemplairesDisponiblesPourPeriode(LocalDate debut, LocalDate fin) {
+        return exemplaireRepository.getExemplairesDisponiblesPourPeriode(debut, fin);
+    }
 }
