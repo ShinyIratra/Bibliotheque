@@ -12,6 +12,8 @@ import service.BlacklistingService;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PretController {
@@ -105,5 +107,13 @@ public class PretController {
         if (id_adherent == null) return "redirect:/login";
         model.addAttribute("pretsEnCours", pretService.getPretsEnCoursByAdherent(id_adherent));
         return "retour_pret";
+    }
+
+    @GetMapping("/exemplaires-disponibles")
+    @ResponseBody
+    public List<Map<String, Object>> getExemplairesDisponibles(@RequestParam String date_pret, @RequestParam String date_retour) {
+        LocalDate debut = LocalDate.parse(date_pret);
+        LocalDate fin = LocalDate.parse(date_retour);
+        return exemplaireService.getExemplairesDisponiblesPourPeriode(debut, fin);
     }
 }
