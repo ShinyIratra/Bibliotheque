@@ -9,9 +9,6 @@ CREATE TABLE Statut(
    PRIMARY KEY(id_statut)
 );
 
--- Statut
-INSERT INTO Statut VALUES (1, 'Disponible'), (2, 'Emprunte'), (3, 'Reserve'), (4, 'Non Disponible');
-
 CREATE TABLE Configuration_Profil(
    id_configuration_profil SERIAL,
    quota INTEGER NOT NULL,
@@ -60,12 +57,26 @@ CREATE TABLE Configuration(
    PRIMARY KEY(id_configuration)
 );
 
+CREATE TABLE Jour_Ferie(
+   id_ferie SERIAL,
+   date_ferie DATE NOT NULL,
+   PRIMARY KEY(id_ferie)
+);
+
+CREATE TABLE Auteur(
+   id_auteur SERIAL,
+   nom VARCHAR(255)  NOT NULL,
+   PRIMARY KEY(id_auteur)
+);
+
 CREATE TABLE Livre(
-   id_livre SERIAL,
+   id_livre SERIAL PRIMARY KEY,
    titre VARCHAR(100)  NOT NULL,
+   id_auteur INTEGER NOT NULL,
    id_categorie INTEGER,
    id_categorie_pret INTEGER NOT NULL,
    PRIMARY KEY(id_livre),
+   FOREIGN KEY(id_auteur) REFERENCES Auteur(id_auteur),
    FOREIGN KEY(id_categorie) REFERENCES Categorie(id_categorie),
    FOREIGN KEY(id_categorie_pret) REFERENCES Categorie_Pret(id_categorie_pret)
 );
@@ -122,7 +133,6 @@ CREATE TABLE Penalite(
    FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent)
 );
 
-
 CREATE TABLE Inscription(
    id SERIAL,
    date_debut TIMESTAMP NOT NULL,
@@ -139,6 +149,24 @@ CREATE TABLE Blacklisting(
    id_adherent INTEGER NOT NULL,
    PRIMARY KEY(id_blacklisting),
    FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent)
+);
+
+CREATE TABLE Note(
+   id_note SERIAL,
+   note SMALLINT NOT NULL,
+   commentaire TEXT NOT NULL,
+   id_adherent INTEGER NOT NULL,
+   id_livre INTEGER NOT NULL,
+   PRIMARY KEY(id_note),
+   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent),
+   FOREIGN KEY(id_livre) REFERENCES Livre(id_livre)
+);
+
+CREATE TABLE Reservtion_Valide(
+   id_reservation_valide SERIAL,
+   id_reservation INTEGER NOT NULL,
+   PRIMARY KEY(id_reservation_valide),
+   FOREIGN KEY(id_reservation) REFERENCES Reservation(id_reservation)
 );
 
 CREATE TABLE Pret(
@@ -168,21 +196,4 @@ CREATE TABLE Retour_Pret(
    id_pret INTEGER NOT NULL,
    PRIMARY KEY(id_retour_pret),
    FOREIGN KEY(id_pret) REFERENCES Pret(id_pret)
-);
-
-CREATE TABLE Jour_Ferie(
-   id_ferie SERIAL,
-   date_ferie DATE NOT NULL,
-   PRIMARY KEY(id_ferie)
-);
-
-CREATE TABLE Note(
-   id_note SERIAL,
-   note SMALLINT NOT NULL,
-   commentaire TEXT NOT NULL,
-   id_adherent INTEGER NOT NULL,
-   id_livre INTEGER NOT NULL,
-   PRIMARY KEY(id_note),
-   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent),
-   FOREIGN KEY(id_livre) REFERENCES Livre(id_livre)
 );
