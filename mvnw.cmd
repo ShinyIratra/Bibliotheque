@@ -168,8 +168,8 @@ set MAVEN_CMD_LINE_ARGS=%*
 if ERRORLEVEL 1 goto error
 
 REM === Ajout : copie automatique du WAR généré ===
-if exist "%MAVEN_PROJECTBASEDIR%\target\spring-web-1.0-SNAPSHOT.war" (
-    copy /Y "%MAVEN_PROJECTBASEDIR%\target\spring-web-1.0-SNAPSHOT.war" "C:\Users\Iratra\Desktop\apache-tomcat-9.0.106\apache-tomcat-9.0.106\webapps\"
+if exist "%MAVEN_PROJECTBASEDIR%\target\bibliotheque.war" (
+    copy /Y "%MAVEN_PROJECTBASEDIR%\target\bibliotheque.war" "C:\Users\Iratra\Desktop\apache-tomcat-9.0.106\apache-tomcat-9.0.106\webapps\"
 )
 
 goto end

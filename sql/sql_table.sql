@@ -70,7 +70,7 @@ CREATE TABLE Auteur(
 );
 
 CREATE TABLE Livre(
-   id_livre SERIAL PRIMARY KEY,
+   id_livre SERIAL,
    titre VARCHAR(100)  NOT NULL,
    id_auteur INTEGER NOT NULL,
    id_categorie INTEGER,

@@ -1,0 +1,42 @@
+1. Gestion des prêts :
+   - Lorsqu'un adhérent effectue un prêt, le système vérifie si l'exemplaire est disponible pour la période demandée.
+   - Le système contrôle que l'adhérent n'a pas dépassé son quota de prêts autorisés en fonction de son profil.
+   - Lors du retour d'un prêt, le statut de l'exemplaire est mis à jour pour indiquer qu'il est à nouveau disponible.
+
+2. Gestion des réservations :
+   - Avant de permettre une réservation, le système vérifie si l'exemplaire est déjà réservé ou emprunté.
+   - Le statut de l'adhérent est vérifié pour s'assurer qu'il est actif et non blacklisté.
+   - Le nombre de réservations en cours est contrôlé pour respecter les limites imposées par le profil de l'adhérent.
+
+3. Gestion des prolongations :
+   - Les adhérents peuvent prolonger un prêt uniquement si leur quota de prolongations n'est pas atteint.
+   - Une prolongation est refusée si un autre adhérent a réservé l'exemplaire.
+
+4. Gestion des adhérents :
+   - Le système permet l'authentification des adhérents via leurs identifiants.
+   - Lors de l'inscription, les périodes d'inscription sont vérifiées pour s'assurer qu'elles respectent les règles définies.
+
+5. Gestion des droits :
+   - Les droits d'emprunt (nombre de prêts, durée maximale, etc.) sont consultables et définis en fonction du profil de l'adhérent.
+
+6. Gestion des notes et avis :
+   - Un adhérent peut noter un livre uniquement s'il l'a emprunté et rendu.
+   - Les bibliothécaires peuvent supprimer ou modérer les avis jugés inappropriés.
+
+7. Gestion des jours fériés :
+   - Les jours fériés peuvent être ajoutés ou consultés pour ajuster les délais de retour des prêts.
+
+8. Gestion des blacklists :
+   - Si un adhérent accumule des retards importants ou des infractions, il est ajouté à une liste noire.
+   - Les adhérents blacklistés ne peuvent pas effectuer de prêts ou de réservations.
+
+9. Gestion des historiques :
+   - Les adhérents et les bibliothécaires peuvent consulter l'historique des prêts pour suivre les emprunts passés.
+
+10. Gestion des prêts sur place :
+    - Certains exemplaires peuvent être empruntés pour une lecture sur place, avec une durée limitée à la journée.
+    - Le système vérifie que l'exemplaire est éligible pour ce type de prêt.
+
+11. Gestion de la date système :
+    - Les administrateurs peuvent modifier la date système pour simuler des scénarios spécifiques (tests, gestion des délais, etc.).
+    - La date peut être réinitialisée à la date actuelle si nécessaire.
