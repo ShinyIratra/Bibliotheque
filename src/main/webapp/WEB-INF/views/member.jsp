@@ -1,81 +1,415 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <title>LIBRARY</title>
+    <title>Bibliothèque - Mon Compte</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        @font-face {
+            font-family: 'LocalSans';
+            src: local('Arial'), local('Helvetica'), local('Segoe UI');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --danger: #ef476f;
+            --dark: #1d3557;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'LocalSans', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+        
+        /* Icônes Unicode et SVG */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            margin-right: 0.25em;
+        }
+        
+        .icon-home::before { content: "🏠"; }
+        .icon-user::before { content: "👤"; }
+        .icon-user-tie::before { content: "👔"; }
+        .icon-logout::before { content: "🚪"; }
+        .icon-signup::before { content: "✏️"; }
+        .icon-book::before { content: "📖"; }
+        .icon-book-open::before { content: "📚"; }
+        .icon-search::before { content: "🔍"; }
+        .icon-filter::before { content: "🔣"; }
+        .icon-author::before { content: "✒️"; }
+        .icon-calendar::before { content: "📅"; }
+        .icon-id::before { content: "#️⃣"; }
+        .icon-genre::before { content: "🏷️"; }
+        .icon-edition::before { content: "📆"; }
+        .icon-info::before { content: "ℹ️"; }
+        .icon-check::before { content: "✅"; }
+        .icon-error::before { content: "❌"; }
+        .icon-question::before { content: "❓"; }
+        .icon-loan::before { content: "🤲"; }
+        .icon-read::before { content: "👀"; }
+        .icon-reserve::before { content: "🔖"; }
+        .icon-lock::before { content: "🔒"; }
+        .icon-grid::before { content: "▦"; }
+        .icon-list::before { content: "☰"; }
+        
+        /* Header & Navigation */
+        header {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1rem;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        nav a:hover {
+            background-color: var(--gray-light);
+        }
+        
+        nav a.primary-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        nav a.primary-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            display: block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        nav a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+        
         main {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        padding: 20px;
-        max-width: 1000px;
-        margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: auto;
         }
 
         #card, #loans, #reservations {
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        padding: 15px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #card::before, #loans::before, #reservations::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
         }
 
         #card {
-        grid-column: 1 / 2; /* Colonne 1 */
+            grid-column: 1 / 2;
         }
 
         #loans {
-        grid-column: 2 / 3; /* Colonne 2 */
+            grid-column: 2 / 3;
         }
 
         #reservations {
-        grid-column: 1 / 3; /* Prend toute la largeur sous les deux autres */
+            grid-column: 1 / 3;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .member-card p, .member-card li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .member-card strong {
+            color: #34495e;
+            min-width: 150px;
+            font-weight: 600;
+        }
+        
+        .status-approved {
+            color: #27ae60;
+            font-weight: bold;
+            background: #d5f4e6;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+        }
+        
+        .subscription-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .subscription-info ul {
+            list-style: none;
+            padding: 0;
         }
 
         @media (max-width: 768px) {
-        main {
-            grid-template-columns: 1fr;
+            main {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            #card, #loans, #reservations {
+                grid-column: auto;
+            }
+            
+            .member-card p, .member-card li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .member-card strong {
+                min-width: auto;
+                margin-bottom: 0.3rem;
+            }
         }
+        
+        /* Styles pour les tableaux */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        th:hover {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        tr:nth-child(even) {
+            background-color: rgba(102, 126, 234, 0.05);
+        }
+        
+        .extension-form {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .extension-form input[type="date"] {
+            padding: 0.5rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .extension-form button {
+            background: linear-gradient(45deg, #f39c12, #d68910);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .extension-form button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 2rem;
+        }
+        
+        /* Animation de chargement */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         #card, #loans, #reservations {
-            grid-column: auto;
+            animation: fadeIn 0.6s ease forwards;
         }
+        
+        #loans {
+            animation-delay: 0.2s;
+        }
+        
+        #reservations {
+            animation-delay: 0.4s;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>LIBRARY</h1>
+        <h1>📚 BIBLIOTHÈQUE</h1>
         <nav>
             <ul>
-                <li><a href="home">Home</a></li>
-                <li><a href="disconnect">Disconnect</a></li>
+                <li><a href="home">🏠 Accueil</a></li>
+                <li><a href="disconnect">🚪 Déconnexion</a></li>
             </ul>
         </nav>
     </header>
     
-    
     <main>
-        <!-- Member Card Section -->
-       <div id="card" >
+        <!-- Carte de Membre -->
+       <div id="card">
+            <h2 class="section-title">👤 Ma Carte de Membre</h2>
             <div class="member-card">
-                <p><strong>Member Id :</strong> ${member.id}</p>
-                <p><strong>Username :</strong> ${member.username}</p>
-                <p><strong>Email :</strong> ${member.email}</p>
-                <p><strong>Member type :</strong> ${member.memberType.value}</p>
-                <p><strong>Registration date :</strong> ${member.registrationDate}</p>
-                <p><strong>Status :</strong> <span class="status-approved">active</span></p>
-                <p><strong>Loan quota :</strong> ${member.memberType.quotaLoan}</p>
-                <p><strong>Reservation quota :</strong> ${member.memberType.quotaReservation}</p>
-                <p><strong>Extension quota :</strong> ${member.memberType.quotaExtension}</p>
-                <p><strong>Subscription :</strong></p>
-                <ul>
-                    <li><strong>Name :</strong> ${subscription.subscriptionType.name}</li>
-                    <li><strong>Duration :</strong> ${subscription.subscriptionType.duration} days</li>
-                    <li><strong>Start date :</strong> ${subscription.subscriptionStart}</li>
-                    <li><strong>End date :</strong> ${subscription.subscriptionEnd}</li>
-                </ul>
+                <p><strong>🆔 ID Membre :</strong> ${member.id}</p>
+                <p><strong>👤 Nom d'utilisateur :</strong> ${member.username}</p>
+                <p><strong>📧 Email :</strong> ${member.email}</p>
+                <p><strong>🏷️ Type de membre :</strong> ${member.memberType.value}</p>
+                <p><strong>📅 Date d'inscription :</strong> ${member.registrationDate}</p>
+                <p><strong>✅ Statut :</strong> <span class="status-approved">Actif</span></p>
+                <p><strong>📚 Quota de prêts :</strong> ${member.memberType.quotaLoan}</p>
+                <p><strong>📋 Quota de réservations :</strong> ${member.memberType.quotaReservation}</p>
+                <p><strong>🔄 Quota d'extensions :</strong> ${member.memberType.quotaExtension}</p>
+                
+                <div class="subscription-info">
+                    <p><strong>💳 Abonnement :</strong></p>
+                    <ul>
+                        <li><strong>📜 Nom :</strong> ${subscription.subscriptionType.name}</li>
+                        <li><strong>⏱️ Durée :</strong> ${subscription.subscriptionType.duration} jours</li>
+                        <li><strong>📅 Date de début :</strong> ${subscription.subscriptionStart}</li>
+                        <li><strong>🏁 Date de fin :</strong> ${subscription.subscriptionEnd}</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -134,19 +468,19 @@
         </div>
          --%>
          
-        <!-- Loans Section -->
+        <!-- Section des Prêts -->
         <div id="loans">
-            <h3>My loans</h3>
+            <h2 class="section-title">📚 Mes Prêts en Cours</h2>
             <table id="loansTable">
                 <thead>
                     <tr>
-                        <th data-sort="loanId">Loan ID</th>
-                        <th data-sort="copyId">Copy ID</th>
-                        <th data-sort="librarian">Librarian</th>
-                        <th data-sort="loanDate">Loan Date</th>
-                        <th data-sort="startDate">Start Date</th>
-                        <th data-sort="dueDate">Due Date</th>
-                        <th>Extensions</th>
+                        <th data-sort="loanId">🆔 ID Prêt</th>
+                        <th data-sort="copyId">📋 ID Exemplaire</th>
+                        <th data-sort="librarian">👨‍💼 Bibliothécaire</th>
+                        <th data-sort="loanDate">📅 Date de Prêt</th>
+                        <th data-sort="startDate">🏁 Date de Début</th>
+                        <th data-sort="dueDate">⏰ Date d'Échéance</th>
+                        <th>🔄 Extensions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -161,49 +495,66 @@
                             <td>
                                 <form action="extension" method="post" class="extension-form">
                                     <input type="hidden" name="loan" value="${loan.id}">
-                                    <div class="form-group">
-                                        <label for="extension">Extension (days):</label>
-                                        <input type="number" name="duration" id="duration" min="1" max="7" required>
-                                    </div>
-                                    <button type="submit">Ask for extension</button>
+                                    <input type="date" name="dueDate" required>
+                                    <button type="submit">🔄 Prolonger</button>
                                 </form>
                             </td>
                         </tr>
                     </c:forEach>
+                    <c:if test="${empty loans}">
+                        <tr>
+                            <td colspan="7" class="no-data">📚 Aucun prêt en cours</td>
+                        </tr>
+                    </c:if>
                 </tbody>
             </table>
-
         </div>
         
-        <!-- Reservations Section -->
+        <!-- Section des Réservations -->
         <div id="reservations">
-            <h3>Do a reservation</h3>
+            <h2 class="section-title">📋 Faire une Réservation</h2>
             <form action="reservation" method="post" class="reservation-form">
                 <c:if test="${not empty error}">
-                    <div class="error-message">
-                        ${error}
+                    <div class="error-message" style="background: #fee; color: #c33; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border-left: 4px solid #c33;">
+                        ⚠️ ${error}
                     </div>
                 </c:if>
                 <c:choose>
                     <c:when test="${not empty book}">
-                        <div class="form-group">
-                            <strong>Book :</strong>
-                            <ul>
-                                <li><strong>Book ID :</strong> ${book.id}</li>
-                                <li><strong>Title :</strong> ${book.title}</li>
-                                <li><strong>Author :</strong> ${book.author.name}</li>
-                                <li><strong>Book genre :</strong> ${book.bookGenre.value}</li>
+                        <div class="book-reservation-info" style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; border-left: 4px solid #667eea;">
+                            <h4 style="color: #2c3e50; margin-bottom: 1rem;">📚 Livre à Réserver :</h4>
+                            <ul style="list-style: none; padding: 0;">
+                                <li style="margin-bottom: 0.5rem;"><strong>🆔 ID :</strong> ${book.id}</li>
+                                <li style="margin-bottom: 0.5rem;"><strong>📖 Titre :</strong> ${book.title}</li>
+                                <li style="margin-bottom: 0.5rem;"><strong>✍️ Auteur :</strong> ${book.author.name}</li>
+                                <li style="margin-bottom: 0.5rem;"><strong>📚 Genre :</strong> ${book.bookGenre.value}</li>
                             </ul>
                             <input type="hidden" name="book" value="${book.id}">
                         </div>
                     </c:when>
                     <c:otherwise>
-                        <p><a href="home" class="action-link">Want to reserve a book? Choose one first</a></p>
+                        <div style="text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 10px; border: 2px dashed #bdc3c7;">
+                            <p style="color: #7f8c8d; font-size: 1.1rem; margin-bottom: 1rem;">📚 Vous souhaitez réserver un livre ?</p>
+                            <a href="home" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 1rem 2rem; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s ease; display: inline-block;">🏠 Choisir un livre</a>
+                        </div>
                     </c:otherwise>
                 </c:choose>
 
-                <div class="form-group">
-                    <label for="start_date">Start date :</label>
+                <c:if test="${not empty book}">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                        <div class="form-group">
+                            <label for="start_date" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #34495e;">📅 Date de début :</label>
+                            <input type="date" name="start_date" id="start_date" required style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 1rem;">
+                        </div>
+                        <div class="form-group">
+                            <label for="due_date" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #34495e;">🏁 Date de fin :</label>
+                            <input type="date" name="due_date" id="due_date" required style="width: 100%; padding: 0.8rem; border: 2px solid #e1e8ed; border-radius: 8px; font-size: 1rem;">
+                        </div>
+                    </div>
+                    <button type="submit" style="width: 100%; background: linear-gradient(45deg, #27ae60, #219a52); color: white; border: none; padding: 1rem; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">📋 Confirmer la Réservation</button>
+                </c:if>
+            </form>
+        </div>
                     <input type="date" name="start_date" id="start_date" required>
                 </div>
                 
@@ -236,7 +587,7 @@
                         });
                         
                         // Définir la nouvelle direction
-                        header.classList.add(`sort-${newDir}`);
+                        header.classList.add('sort-' + newDir);
                         
                         // Trier le tableau
                         sortTable(table, sortKey, newDir);
@@ -267,8 +618,8 @@
             const rows = Array.from(tbody.querySelectorAll('tr'));
             
             rows.sort((a, b) => {
-                const aValue = a.querySelector(`td:nth-child(${getColumnIndex(table, sortKey)})`).textContent;
-                const bValue = b.querySelector(`td:nth-child(${getColumnIndex(table, sortKey)})`).textContent;
+                const aValue = a.querySelector('td:nth-child(' + getColumnIndex(table, sortKey) + ')').textContent;
+                const bValue = b.querySelector('td:nth-child(' + getColumnIndex(table, sortKey) + ')').textContent;
                 
                 // Pour les dates
                 if (sortKey.includes('Date')) {

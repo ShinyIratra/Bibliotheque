@@ -1,199 +1,320 @@
 \c postgres
-drop database bibliotheque;
-create database bibliotheque; 
+drop database if exists bibliotheque;
+create database bibliotheque;
 \c bibliotheque
 
-CREATE TABLE Statut(
-   id_statut SERIAL,
-   nom VARCHAR(100)  NOT NULL,
-   PRIMARY KEY(id_statut)
+CREATE TABLE before (
+    id serial primary key,
+    value boolean not null
 );
 
-CREATE TABLE Configuration_Profil(
-   id_configuration_profil SERIAL,
-   quota INTEGER NOT NULL,
-   nbr_prolongement INTEGER NOT NULL,
-   quota_reservation INTEGER,
-   PRIMARY KEY(id_configuration_profil)
+CREATE TABLE public_holiday (
+    id           SERIAL       PRIMARY KEY,
+    name         TEXT         NOT NULL,
+    date_holiday DATE         NOT NULL
 );
 
-CREATE TABLE Profil(
-   id_profil SERIAL,
-   nom VARCHAR(100)  NOT NULL,
-   id_configuration_profil INTEGER NOT NULL,
-   PRIMARY KEY(id_profil),
-   FOREIGN KEY(id_configuration_profil) REFERENCES Configuration_Profil(id_configuration_profil)
+CREATE TABLE member_type (
+    id                 SERIAL       PRIMARY KEY,
+    value              TEXT         NOT NULL,
+    quota_loan         INTEGER      NOT NULL,
+    quota_reservation  INTEGER      NOT NULL,
+    quota_extension    INTEGER      NOT NULL,
+    loan_duration      INTEGER      NOT NULL,
+    extension_duration INTEGER     NOT NULL,
+    penality_duration  INTEGER      NOT NULL
 );
 
-CREATE TABLE Categorie_Pret(
-   id_categorie_pret SERIAL,
-   nom VARCHAR(100)  NOT NULL,
-   PRIMARY KEY(id_categorie_pret)
+CREATE TABLE status (
+    id    SERIAL       PRIMARY KEY,
+    value TEXT         NOT NULL
 );
 
-CREATE TABLE Type_Penalite(
-   id_type_penalite INTEGER,
-   nom VARCHAR(100) ,
-   PRIMARY KEY(id_type_penalite)
+CREATE TABLE member (
+    id                 SERIAL       PRIMARY KEY,
+    email              TEXT         NOT NULL,
+    id_member_type     INTEGER      NOT NULL,
+    username           TEXT         NOT NULL,
+    birth              DATE         NOT NULL,
+    password           TEXT         NOT NULL,
+    registration_date  DATE         NOT NULL,
+
+    CONSTRAINT fk_member_type
+        FOREIGN KEY (id_member_type)
+        REFERENCES member_type(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Categorie(
-   id_categorie SERIAL,
-   nom VARCHAR(50)  NOT NULL,
-   restriction INTEGER NOT NULL,
-   PRIMARY KEY(id_categorie)
+CREATE TABLE member_status (
+    id          SERIAL  PRIMARY KEY,
+    id_member   INTEGER NOT NULL,
+    id_status   INTEGER NOT NULL,
+    status_date DATE    NOT NULL,
+
+    CONSTRAINT fk_member_status_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_member_status_status
+        FOREIGN KEY (id_status)
+        REFERENCES status(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Type_Pret(
-   id_type_pret SERIAL,
-   nom VARCHAR(100)  NOT NULL,
-   PRIMARY KEY(id_type_pret)
+CREATE TABLE librarian (
+    id       SERIAL PRIMARY KEY,
+    username TEXT   NOT NULL,
+    password TEXT   NOT NULL
 );
 
-CREATE TABLE Configuration(
-   id_configuration SERIAL,
-   nbr_retard INTEGER NOT NULL,
-   nbr_mois INTEGER NOT NULL,
-   PRIMARY KEY(id_configuration)
+CREATE TABLE subscription_type (
+    id       SERIAL        PRIMARY KEY,
+    name     TEXT          NOT NULL,
+    duration INTEGER       NOT NULL
 );
 
-CREATE TABLE Jour_Ferie(
-   id_ferie SERIAL,
-   date_ferie DATE NOT NULL,
-   PRIMARY KEY(id_ferie)
+CREATE TABLE subscription (
+    id                    SERIAL  PRIMARY KEY,
+    id_member             INTEGER NOT NULL,
+    id_subscription_type  INTEGER NOT NULL,
+    id_librarian          INTEGER ,
+    subscription_date     DATE    NOT NULL,
+    subscription_start    DATE    NOT NULL,
+    subscription_end      DATE    NOT NULL,
+
+    CONSTRAINT fk_subscription_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_subscription_type
+        FOREIGN KEY (id_subscription_type)
+        REFERENCES subscription_type(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_subscription_librarian
+        FOREIGN KEY (id_librarian)
+        REFERENCES librarian(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Auteur(
-   id_auteur SERIAL,
-   nom VARCHAR(255)  NOT NULL,
-   PRIMARY KEY(id_auteur)
+CREATE TABLE book_genre (
+    id    SERIAL PRIMARY KEY,
+    value TEXT   NOT NULL
 );
 
-CREATE TABLE Livre(
-   id_livre SERIAL,
-   titre VARCHAR(100)  NOT NULL,
-   id_auteur INTEGER NOT NULL,
-   id_categorie INTEGER,
-   id_categorie_pret INTEGER NOT NULL,
-   PRIMARY KEY(id_livre),
-   FOREIGN KEY(id_auteur) REFERENCES Auteur(id_auteur),
-   FOREIGN KEY(id_categorie) REFERENCES Categorie(id_categorie),
-   FOREIGN KEY(id_categorie_pret) REFERENCES Categorie_Pret(id_categorie_pret)
+CREATE TABLE book_theme (
+    id    SERIAL PRIMARY KEY,
+    value TEXT   NOT NULL
 );
 
-CREATE TABLE Exemplaire(
-   id_exemplaire SERIAL,
-   Reference VARCHAR(100)  NOT NULL,
-   id_livre INTEGER NOT NULL,
-   PRIMARY KEY(id_exemplaire),
-   FOREIGN KEY(id_livre) REFERENCES Livre(id_livre)
+CREATE TABLE author (
+    id          SERIAL PRIMARY KEY,
+    name        TEXT   NOT NULL,
+    artist_name TEXT   NULL
 );
 
-CREATE TABLE Statut_Exemplaire(
-   id_status_exemplaire SERIAL,
-   date_ajout TIMESTAMP NOT NULL,
-   id_exemplaire INTEGER NOT NULL,
-   id_statut INTEGER NOT NULL,
-   PRIMARY KEY(id_status_exemplaire),
-   FOREIGN KEY(id_exemplaire) REFERENCES Exemplaire(id_exemplaire),
-   FOREIGN KEY(id_statut) REFERENCES Statut(id_statut)
+CREATE TABLE book (
+    id             SERIAL  PRIMARY KEY,
+    title          TEXT    NOT NULL,
+    id_author      INTEGER NOT NULL,
+    id_book_genre  INTEGER NOT NULL,
+    edition_date   DATE    NOT NULL,
+    age            INTEGER NOT NULL,
+
+    CONSTRAINT fk_book_author
+        FOREIGN KEY (id_author)
+        REFERENCES author(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_book_genre
+        FOREIGN KEY (id_book_genre)
+        REFERENCES book_genre(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Adherent(
-   id_adherent SERIAL,
-   nom VARCHAR(100)  NOT NULL,
-   identifiant VARCHAR(100)  NOT NULL,
-   password VARCHAR(50)  NOT NULL,
-   date_naissance DATE NOT NULL,
-   id_profil INTEGER NOT NULL,
-   PRIMARY KEY(id_adherent),
-   UNIQUE(identifiant),
-   FOREIGN KEY(id_profil) REFERENCES Profil(id_profil)
+CREATE TABLE book_details (
+    id             SERIAL  PRIMARY KEY,
+    id_book        INTEGER NOT NULL,
+    id_book_theme  INTEGER NOT NULL,
+
+    CONSTRAINT fk_book_details_book
+        FOREIGN KEY (id_book)
+        REFERENCES book(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_book_details_theme
+        FOREIGN KEY (id_book_theme)
+        REFERENCES book_theme(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Reservation(
-   id_reservation SERIAL,
-   date_reservation TIMESTAMP NOT NULL,
-   date_reserver TIMESTAMP NOT NULL,
-   id_exemplaire INTEGER NOT NULL,
-   id_adherent INTEGER NOT NULL,
-   PRIMARY KEY(id_reservation),
-   FOREIGN KEY(id_exemplaire) REFERENCES Exemplaire(id_exemplaire),
-   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent)
+CREATE TABLE copy (
+    id       SERIAL  PRIMARY KEY,
+    id_book  INTEGER NOT NULL,
+    copy_id  INTEGER NOT NULL,
+
+    CONSTRAINT fk_copy_book
+        FOREIGN KEY (id_book)
+        REFERENCES book(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Penalite(
-   id_penalite SERIAL,
-   justificatif TEXT,
-   date_penalite TIMESTAMP,
-   id_type_penalite INTEGER NOT NULL,
-   id_adherent INTEGER NOT NULL,
-   PRIMARY KEY(id_penalite),
-   FOREIGN KEY(id_type_penalite) REFERENCES Type_Penalite(id_type_penalite),
-   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent)
+CREATE TABLE loan (
+    id                  SERIAL  PRIMARY KEY,
+    id_member           INTEGER NOT NULL,
+    id_copy             INTEGER NOT NULL,
+    id_librarian_loan   INTEGER NOT NULL,
+    loan_date           DATE    NOT NULL,
+    start_date          DATE    NOT NULL,
+    due_date            DATE    NOT NULL,
+    id_librarian_return INTEGER,
+    return_date         DATE,
+
+    CONSTRAINT fk_loan_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_loan_copy
+        FOREIGN KEY (id_copy)
+        REFERENCES copy(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_loan_librarian_loan
+        FOREIGN KEY (id_librarian_loan)
+        REFERENCES librarian(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_loan_librarian_return
+        FOREIGN KEY (id_librarian_return)
+        REFERENCES librarian(id)
+        ON DELETE SET NULL
 );
 
-CREATE TABLE Inscription(
-   id SERIAL,
-   date_debut TIMESTAMP NOT NULL,
-   date_fin TIMESTAMP NOT NULL,
-   id_adherent INTEGER NOT NULL,
-   PRIMARY KEY(id),
-   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent)
+CREATE TABLE reservation (
+    id                SERIAL  PRIMARY KEY,
+    id_member         INTEGER NOT NULL,
+    id_book           INTEGER NOT NULL,
+    reservation_date  DATE    NOT NULL,
+    ask_start_date    DATE    NOT NULL,
+    ask_due_date      DATE    NOT NULL,
+    id_librarian      INTEGER,
+    treatment_date    DATE,
+    id_loan           INTEGER,
+
+    CONSTRAINT fk_reservation_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_reservation_book
+        FOREIGN KEY (id_book)
+        REFERENCES book(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_reservation_librarian
+        FOREIGN KEY (id_librarian)
+        REFERENCES librarian(id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_reservation_loan
+        FOREIGN KEY (id_loan)
+        REFERENCES loan(id)
+        ON DELETE SET NULL
 );
 
-CREATE TABLE Blacklisting(
-   id_blacklisting SERIAL,
-   date_debut TIMESTAMP,
-   date_fin TIMESTAMP,
-   id_adherent INTEGER NOT NULL,
-   PRIMARY KEY(id_blacklisting),
-   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent)
+CREATE TABLE extension (
+    id               SERIAL  PRIMARY KEY,
+    id_loan          INTEGER NOT NULL,
+    extension_date   DATE    NOT NULL,
+    actual_due_date  DATE    NOT NULL,
+    ask_due_date     DATE    NOT NULL,
+    id_librarian     INTEGER,
+    treatment_date   DATE,
+    is_allowed       BOOLEAN,
+
+    CONSTRAINT fk_extension_loan
+        FOREIGN KEY (id_loan)
+        REFERENCES loan(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_extension_librarian
+        FOREIGN KEY (id_librarian)
+        REFERENCES librarian(id)
+        ON DELETE SET NULL
 );
 
-CREATE TABLE Note(
-   id_note SERIAL,
-   note SMALLINT NOT NULL,
-   commentaire TEXT NOT NULL,
-   id_adherent INTEGER NOT NULL,
-   id_livre INTEGER NOT NULL,
-   PRIMARY KEY(id_note),
-   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent),
-   FOREIGN KEY(id_livre) REFERENCES Livre(id_livre)
+CREATE TABLE penality (
+    id          SERIAL        PRIMARY KEY,
+    id_loan     INTEGER       NOT NULL,
+    id_member   INTEGER       NOT NULL,
+    start_date    DATE          NOT NULL,
+    end_date DATE NOT NULL,
+
+    CONSTRAINT fk_penality_loan
+        FOREIGN KEY (id_loan)
+        REFERENCES loan(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_penality_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Reservtion_Valide(
-   id_reservation_valide SERIAL,
-   id_reservation INTEGER NOT NULL,
-   PRIMARY KEY(id_reservation_valide),
-   FOREIGN KEY(id_reservation) REFERENCES Reservation(id_reservation)
+CREATE TABLE member_quota_loan (
+    id         SERIAL  PRIMARY KEY,
+    id_member  INTEGER NOT NULL,
+    quota      INTEGER NOT NULL,
+    quota_date DATE    NOT NULL,
+    id_loan    INTEGER NULL,
+
+    CONSTRAINT fk_member_quota_loan_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Pret(
-   id_pret SERIAL,
-   date_pret TIMESTAMP NOT NULL,
-   date_retour TIMESTAMP NOT NULL,
-   id_type_pret INTEGER NOT NULL,
-   id_exemplaire INTEGER NOT NULL,
-   id_adherent INTEGER NOT NULL,
-   PRIMARY KEY(id_pret),
-   FOREIGN KEY(id_type_pret) REFERENCES Type_Pret(id_type_pret),
-   FOREIGN KEY(id_exemplaire) REFERENCES Exemplaire(id_exemplaire),
-   FOREIGN KEY(id_adherent) REFERENCES Adherent(id_adherent)
+CREATE TABLE member_quota_reservation (
+    id              SERIAL  PRIMARY KEY,
+    id_member       INTEGER NOT NULL,
+    quota           INTEGER NOT NULL,
+    quota_date      DATE    NOT NULL,
+    id_reservation  INTEGER NULL,
+
+    CONSTRAINT fk_member_quota_reservation_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Prolongement(
-   id_prolongement SERIAL,
-   date_retour TIMESTAMP NOT NULL,
-   id_pret INTEGER NOT NULL,
-   PRIMARY KEY(id_prolongement),
-   FOREIGN KEY(id_pret) REFERENCES Pret(id_pret)
+CREATE TABLE member_quota_extension (
+    id             SERIAL  PRIMARY KEY,
+    id_member      INTEGER NOT NULL,
+    quota          INTEGER NOT NULL,
+    quota_date     DATE    NOT NULL,
+    id_extension   INTEGER NULL,
+
+    CONSTRAINT fk_member_quota_extension_member
+        FOREIGN KEY (id_member)
+        REFERENCES member(id)
+        ON DELETE CASCADE
 );
 
-CREATE TABLE Retour_Pret(
-   id_retour_pret SERIAL,
-   date_retourne TIMESTAMP NOT NULL,
-   id_pret INTEGER NOT NULL,
-   PRIMARY KEY(id_retour_pret),
-   FOREIGN KEY(id_pret) REFERENCES Pret(id_pret)
+CREATE TABLE authorisation (
+    id               SERIAL  PRIMARY KEY,
+    id_member_type   INTEGER NOT NULL,
+    id_book          INTEGER NOT NULL,
+
+    CONSTRAINT fk_authorisation_member_type
+        FOREIGN KEY (id_member_type)
+        REFERENCES member_type(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_authorisation_book
+        FOREIGN KEY (id_book)
+        REFERENCES book(id)
+        ON DELETE CASCADE
 );

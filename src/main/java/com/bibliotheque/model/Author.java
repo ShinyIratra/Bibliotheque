@@ -1,6 +1,8 @@
 package com.bibliotheque.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "author")
@@ -10,8 +12,12 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Le nom de l'auteur est obligatoire")
+    @Size(max = 255, message = "Le nom ne peut pas dépasser 255 caractères")
+    @Column(nullable = false)
     private String name;
 
+    @Size(max = 255, message = "Le nom d'artiste ne peut pas dépasser 255 caractères")
     @Column(name = "artist_name")
     private String artistName;
 

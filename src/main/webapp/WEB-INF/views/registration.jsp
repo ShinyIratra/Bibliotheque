@@ -1,103 +1,260 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <title>LIBRARY</title>
+    <title>Bibliothèque - Inscription</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Reset de base */
+        @font-face {
+            font-family: 'LocalSans';
+            src: local('Arial'), local('Helvetica'), local('Segoe UI');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --danger: #ef476f;
+            --dark: #1d3557;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'LocalSans', Arial, sans-serif;
             line-height: 1.6;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
         }
         
-        /* En-tête */
-        .futuristic-header {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
+        /* Header & Navigation */
+        header {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         
-        .futuristic-header h1 {
-            margin: 0;
+        /* Icônes Unicode et SVG */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.125em;
+            margin-right: 0.25em;
         }
         
-        .futuristic-nav ul {
-            list-style: none;
-            padding: 0;
+        .icon-home::before { content: "🏠"; }
+        .icon-user::before { content: "👤"; }
+        .icon-user-tie::before { content: "👔"; }
+        .icon-logout::before { content: "🚪"; }
+        .icon-signup::before { content: "✏️"; }
+        .icon-book::before { content: "📖"; }
+        .icon-book-open::before { content: "📚"; }
+        .icon-search::before { content: "🔍"; }
+        .icon-filter::before { content: "🔣"; }
+        .icon-author::before { content: "✒️"; }
+        .icon-calendar::before { content: "📅"; }
+        .icon-id::before { content: "#️⃣"; }
+        .icon-genre::before { content: "🏷️"; }
+        .icon-edition::before { content: "📆"; }
+        .icon-info::before { content: "ℹ️"; }
+        .icon-check::before { content: "✅"; }
+        .icon-error::before { content: "❌"; }
+        .icon-question::before { content: "❓"; }
+        .icon-loan::before { content: "🤲"; }
+        .icon-read::before { content: "👀"; }
+        .icon-reserve::before { content: "🔖"; }
+        .icon-lock::before { content: "🔒"; }
+        .icon-grid::before { content: "▦"; }
+        .icon-list::before { content: "☰"; }
+        
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .header-content {
             display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1rem 0 0;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
         }
         
-        .futuristic-nav a {
-            color: white;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             text-decoration: none;
         }
         
-        /* Contenu principal */
-        .futuristic-main {
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+        
+        nav ul {
             display: flex;
-            justify-content: center;
-            padding: 2rem 1rem;
+            list-style: none;
+            gap: 1rem;
         }
         
-        .futuristic-container {
-            width: 100%;
+        nav a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        nav a:hover {
+            background-color: var(--gray-light);
+        }
+        
+        nav a.primary-btn {
+            background: var(--primary);
+            color: white;
+        }
+        
+        nav a.primary-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        /* Main content */
+        main {
+            display: flex;
+            flex-direction: column;
             max-width: 600px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
         }
         
-        .futuristic-content {
-            background-color: white;
+        .registration-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
             padding: 2rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
         }
         
-        .section-title {
+        .page-title {
             text-align: center;
-            margin-bottom: 2rem;
-            color: #444;
+            margin: 2rem 0;
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
         }
         
         /* Formulaire */
-        .futuristic-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+        .form-group {
+            margin-bottom: 1.5rem;
         }
         
-        .input-group {
-            position: relative;
-        }
-        
-        .input-group input,
-        .input-group select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-        
-        .input-group label {
+        .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #666;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
-        /* Masquer le highlight futuriste */
-        .input-highlight {
-            display: none;
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: white;
         }
         
-        /* Bouton */
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+        }
+        
+        .btn-success {
+            background: var(--success);
+        }
         .futuristic-btn {
             background-color: #555;
             color: white;

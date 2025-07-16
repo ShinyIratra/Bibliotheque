@@ -38,19 +38,31 @@ public class ListService {
 
     @Transactional(readOnly = true)
     public List<Book> getAllBooksWithThemes(String bookGenreId, String authorId, String editionDateMin, String editionDateMax) {
-        Long bookGenreLong = (bookGenreId == null || bookGenreId.isEmpty()) ? null : Long.valueOf(bookGenreId);
-        Long authorLong = (authorId == null || authorId.isEmpty()) ? null : Long.valueOf(authorId);
-        LocalDate dateMin = (editionDateMin == null || editionDateMin.isEmpty()) ? null : LocalDate.parse(editionDateMin);
-        LocalDate dateMax = (editionDateMax == null || editionDateMax.isEmpty()) ? null : LocalDate.parse(editionDateMax);
-        List<Book> books =  bookRepository.findAllWithThemesFiltered(bookGenreLong, authorLong, dateMin, dateMax);
-        for (Book b : books) {
-            b.getThemes().size();
+        try {
+            Long bookGenreLong = (bookGenreId == null || bookGenreId.isEmpty()) ? null : Long.valueOf(bookGenreId);
+            Long authorLong = (authorId == null || authorId.isEmpty()) ? null : Long.valueOf(authorId);
+            LocalDate dateMin = (editionDateMin == null || editionDateMin.isEmpty()) ? null : LocalDate.parse(editionDateMin);
+            LocalDate dateMax = (editionDateMax == null || editionDateMax.isEmpty()) ? null : LocalDate.parse(editionDateMax);
+            
+            // Validation de cohérence des dates
+            if (dateMin != null && dateMax != null && dateMin.isAfter(dateMax)) {
+                throw new IllegalArgumentException("La date minimum ne peut pas être postérieure à la date maximum");
+            }
+            
+            List<Book> books = bookRepository.findAllWithThemesFiltered(bookGenreLong, authorLong, dateMin, dateMax);
+            for (Book b : books) {
+                b.getThemes().size(); // Force le chargement des thèmes
+            }
+            return books;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Format d'identifiant invalide", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la récupération des livres", e);
         }
-        return books;
     }
 
     @Transactional(readOnly = true)
-    public Book getAvalaibilityBook(LocalDate date, Long bookId) {
+    public Book getAvailabilityBook(LocalDate date, Long bookId) {
         Book book = bookRepository.findById(bookId)
             .orElseThrow(() -> new RuntimeException("Book not found: id=" + bookId));
 

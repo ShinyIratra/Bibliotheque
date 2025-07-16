@@ -40,6 +40,9 @@ public class LibrarianController {
         model.addAttribute("loans", librarianService.getAllLoansDue());
         model.addAttribute("reservations", librarianService.getAllReservationsUntreat());
         model.addAttribute("extensions", librarianService.getAllExtensionsUntreat());
+        
+        // Ajouter la date d'aujourd'hui pour les formulaires de retour
+        model.addAttribute("today", LocalDate.now().toString());
 
         // Gestion des erreurs stockées en session
         String error = (String) session.getAttribute("error");
@@ -122,13 +125,17 @@ public class LibrarianController {
     public String loan(@RequestParam("username") String username, 
                        @RequestParam("book") String book, 
                        @RequestParam("duration") String duration,
+                       @RequestParam("loan_date") String loanDate,
                        HttpSession session) {
         try {
             Long idBook = Long.parseLong(book);
             int loanDuration = Integer.parseInt(duration);
-            librarianService.loan(username, idBook, loanDuration, (Long)session.getAttribute("sessionLibrarian"));
+            LocalDate loanDateParsed = LocalDate.parse(loanDate);
+            librarianService.loan(username, idBook, loanDuration, loanDateParsed, (Long)session.getAttribute("sessionLibrarian"));
         } catch (NumberFormatException e) {
             session.setAttribute("error", "Invalid format for book ID or duration.");
+        } catch (DateTimeParseException e) {
+            session.setAttribute("error", "Invalid date format for loan date.");
         } catch (Exception e) {
             session.setAttribute("error", e.getMessage());
         }
@@ -151,12 +158,17 @@ public class LibrarianController {
     }
 
     @PostMapping("/return-loan")
-    public String returnLoan(@RequestParam("loan") String loan, HttpSession session) {
+    public String returnLoan(@RequestParam("loan") String loan, 
+                           @RequestParam("return_date") String returnDate,
+                           HttpSession session) {
         try {
             Long idLoan = Long.parseLong(loan);
-            librarianService.returnLoan(idLoan, (Long)session.getAttribute("sessionLibrarian"));
+            LocalDate returnDateParsed = LocalDate.parse(returnDate);
+            librarianService.returnLoan(idLoan, (Long)session.getAttribute("sessionLibrarian"), returnDateParsed);
         } catch (NumberFormatException e) {
             session.setAttribute("error", "Invalid format for loan.");
+        } catch (DateTimeParseException e) {
+            session.setAttribute("error", "Invalid date format. Please use YYYY-MM-DD.");
         } catch (Exception e) {
             session.setAttribute("error", e.getMessage());
         }

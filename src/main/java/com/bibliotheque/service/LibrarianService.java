@@ -275,8 +275,8 @@ public class LibrarianService {
     }
 
     @Transactional
-    public void loan(String username, Long idBook, int loanDuration, Long idLibrarian) {
-        LocalDate today = LocalDate.now();
+    public void loan(String username, Long idBook, int loanDuration, LocalDate loanDate, Long idLibrarian) {
+        LocalDate today = loanDate;
 
         // Récupération du membre
         Member member = memberRepository.findByUsername(username)
@@ -419,7 +419,7 @@ public class LibrarianService {
 
 
     @Transactional
-    public void returnLoan(Long idLoan, Long idLibrarian) {
+    public void returnLoan(Long idLoan, Long idLibrarian, LocalDate returnDate) {
         // Vérifier si le bibliothécaire existe
         Librarian librarian = librarianRepository.findById(idLibrarian)
             .orElseThrow(() -> new RuntimeException("Librarian not found with id: " + idLibrarian));
@@ -428,9 +428,13 @@ public class LibrarianService {
         Loan loan = loanRepository.findById(idLoan)
             .orElseThrow(() -> new RuntimeException("Loan not found with id: " + idLoan));
 
+        // Validation de la date de retour
+        if (returnDate.isBefore(loan.getStartDate())) {
+            throw new RuntimeException("Return date cannot be before the loan start date");
+        }
+
         // Mettre à jour les infos de retour
-        LocalDate now = LocalDate.now();
-        loan.setReturnDate(now);
+        loan.setReturnDate(returnDate);
         loan.setLibrarianReturn(librarian);
         loanRepository.save(loan);
 
@@ -441,14 +445,14 @@ public class LibrarianService {
         quota.setLoan(loan);
         memberQuotaLoanRepository.save(quota);
 
-        // Vérifier s'il y a un retard
-        if (now.isAfter(loan.getDueDate())) {
+        // Vérifier s'il y a un retard (basé sur la date de retour saisie)
+        if (returnDate.isAfter(loan.getDueDate())) {
             Member member = loan.getMember();
             MemberType memberType = member.getMemberType();
 
             // Durée de la pénalité
             int penalityDuration = memberType.getPenalityDuration();
-            LocalDate startDate = now;
+            LocalDate startDate = returnDate;
             LocalDate endDate = startDate.plusDays(penalityDuration);
 
             // Insertion pénalité
@@ -462,9 +466,15 @@ public class LibrarianService {
             MemberStatus memberStatus = new MemberStatus();
             memberStatus.setMember(member);
             memberStatus.setStatus(status);
-            memberStatus.setStatusDate(now);
+            memberStatus.setStatusDate(returnDate);
             memberStatusRepository.save(memberStatus);
         }
+    }
+
+    // Méthode de compatibilité qui utilise la date actuelle
+    @Transactional
+    public void returnLoan(Long idLoan, Long idLibrarian) {
+        returnLoan(idLoan, idLibrarian, LocalDate.now());
     }
 
 }
